@@ -2,13 +2,22 @@ import { clipboard, ipcMain } from "electron";
 import YTDL from "./ytdl";
 import ytdl from "ytdl-core";
 import { Logger } from "../util/logger";
+import { Global } from "../global";
 
-ipcMain.handle('download-video', async (l: any, url: string) => {
-    await YTDL.downloadVideo(url);
+export function send(ev: string, args: any) {
+    Global.MAIN_WINDOW.webContents.send(ev, args)
+}
+
+ipcMain.on('download-video', async (l: any, url: string) => {
+    return await YTDL.downloadVideo(url);
 })
 
-ipcMain.handle('download-music', async (l: any, url: string) => {
-    await YTDL.downloadMusic(url);
+ipcMain.on('download-music', async (l: any, url: string) => {
+    return await YTDL.downloadMusic(url);
+})
+
+ipcMain.handle('check-url', (l: any, url: string) => {
+    return ytdl.validateURL(url);
 })
 
 ipcMain.handle('get-info', async (l: any, url: string) => {
@@ -17,16 +26,15 @@ ipcMain.handle('get-info', async (l: any, url: string) => {
         const {thumbnails,title,description,channelId,author} = videoDetails;
         
         let thumbnail = thumbnails?.[thumbnails.length-1].url;
-        console.log(thumbnail);
 
         return {
-            thumbnail  : thumbnail,
-            title      : title,
-            desc       : description,
-            channelId  : channelId,
-            authorName : author.name,
+            thumbnail,
+            title,
+            channelId,
+            desc: description,
+            authorName: author.name,
             authorImage: author.thumbnails?.[author.thumbnails.length-1].url,
-            authorUrl  : author.channel_url
+            authorUrl: author.channel_url
         }
     } catch (err) {
         Logger.error(`[ipc.get-info]`,err)

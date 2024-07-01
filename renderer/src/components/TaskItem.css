@@ -20,7 +20,17 @@
 
         >.image {
             height: 60px;
-    
+            width: 100px;
+            min-width: 100px;
+            max-width: 100px;
+            border-radius: 5px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            cursor: pointer;
+
             >img {
                 height: 100%;
             }
@@ -81,18 +91,56 @@
             padding: 9px;
             border-radius: 5px;
             font-size: 15px;
-            width: 85px;
             text-align: center;
+            height: 36px;
         }
 
-        >.type {
+        >.progress {
+            white-space: nowrap;
             background: rgb(240,240,240);
             cursor: pointer;
         }
 
         >.del-btn {
+            width: 85px;
             background: rgb(247, 76, 76);
             color: white;
         }
+    }
+}
+
+.task-item[data-loading="true"] {
+    >.left {
+
+        .title {
+            height: 20px;
+            width: 200px;
+            background: lightgray;
+            border-radius: 5px;
+        }
+
+        >.title-and-author {
+            >.author {
+                >* {
+                    background: lightgray;
+                    border-radius: 5px;
+                }
+
+                .name {
+                    height: 15px;
+                    width: 100px;
+                }
+            }
+        }
+
+        >.image {
+            width: 170px;
+            background: lightgray;
+            border-radius: 5px;
+        }
+    }
+
+    >.right {
+
     }
 }

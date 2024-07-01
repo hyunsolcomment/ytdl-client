@@ -12,7 +12,7 @@ export default function Input() {
     const refUrl  = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if(!refUrl.current) {
+        if(!refUrl.current || !refType.current) {
             return;
         }
 
@@ -23,8 +23,8 @@ export default function Input() {
             if(key === 'v' && e.ctrlKey) {
                 e.preventDefault();
                 const copiedText = await window.electron.invoke('get-clipboard-text', undefined);
-                refUrl.current!.value = copiedText;
-                refUrl.current!.focus();
+
+                startTask(copiedText, refType.current!.value.toLowerCase());
             }
 
             // Ctrl + A
@@ -39,7 +39,7 @@ export default function Input() {
         return () => {
             window.removeEventListener('keydown', onKeyDown);
         }
-    },[refUrl]);
+    },[refUrl,refType]);
 
     function onKeyDown_UrlInput(e: React.KeyboardEvent<HTMLInputElement>) {
         switch(e.key.toLowerCase()) {
@@ -48,44 +48,51 @@ export default function Input() {
                 onClick_SubmitButton();
                 break;
         }
+    }   
+
+    async function startTask(url: string, type: string) {
+
+        // 올바르지 않은 타입
+        if(!['mp3','mp4'].includes(type)) {
+            Announce.show("올바르지 않은 타입의 요청입니다.")
+            return;
+        }
+
+        async function check(_url: string) {
+            // 이미 등록된 URL
+            if(taskList.find(t => t.url === _url)) {
+                Announce.show("이미 등록된 URL입니다.")
+                return false;
+            }
+
+            // 잘못된 URL
+            if(!await window.electron.invoke('check-url', _url)) {
+                Announce.show("올바르지 않은 URL입니다.")
+                return false;
+            }
+
+            return true;
+        }
+
+        let addArray: { url: string, type: string }[] = [];
+
+        for(let str of url.split("\n")) {
+            if(await check(str)) {
+                addArray.push({ url: str, type: type })
+            }
+        }
+
+        Task.setTaskList([...taskList, ...addArray])
     }
 
     async function onClick_SubmitButton() {
         if(refType.current && refUrl.current) {
-            let type:string = refType.current.value.toLowerCase();
-            let url:string  = refUrl.current.value;
+            let type = refType.current.value.toLowerCase();
+            let url  = refUrl.current.value;
 
-            // 올바르지 않은 타입
-            if(!['mp3','mp4'].includes(type)) {
-                Announce.show("올바르지 않은 타입의 요청입니다.")
-                return;
-            }
+            startTask(url, type);
 
-            // 이미 등록된 URL
-            if(taskList.find(t => t.url === url)) {
-                Announce.show("이미 등록된 URL입니다.")
-                return;
-            }
-
-            const info = await window.electron.invoke('get-info', url);
-
-            if(info) {
-                Task.setTaskList([...taskList, {
-                    title       : info.title,
-                    desc        : info.desc,
-                    thumbnail   : info.thumbnail,
-                    channelId   : info.channelId,
-                    authorName  : info.authorName,
-                    authorImage : info.authorImage,
-                    authorUrl   : info.authorUrl,
-                    url, type
-                }])
-
-                refUrl.current.value = "";
-
-            } else {
-                Announce.show("올바르지 않은 URL입니다.")
-            }
+            refUrl.current!.value = "";
         }
     }
 
