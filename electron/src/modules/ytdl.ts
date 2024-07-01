@@ -1,4 +1,4 @@
-const ytdl = require("ytdl-core");
+import ytdl from 'ytdl-core';
 import fsExtra from 'fs-extra';
 import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
@@ -121,6 +121,10 @@ class YTDL {
         } catch (error) {
             logger.error(error);
         }
+    }
+
+    static verifyURL(url: string) {
+        return ytdl.validateURL(url);
     }
 }
 

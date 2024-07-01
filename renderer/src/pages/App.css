@@ -1,11 +1,27 @@
 .app {
     display: flex;
     flex-direction: column;
-    gap: 15px;
 
     position: absolute;
     left: 0;
     top: 0;
     height: 100%;
     width: 100%;
+
+    >header {
+        .logo {
+            font-weight: bold;
+        }
+    }
+
+    >section {
+        flex-grow: 1;
+    }
+
+    >footer {
+        background: rgb(245,245,245);
+        height: 50px;
+        min-height: 50px;
+        max-height: 50px;
+    }
 }

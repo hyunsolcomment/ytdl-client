@@ -1,4 +1,5 @@
 import Input from "../components/Input";
+import TaskList from "../components/TaskList";
 import './App.css';
 import './Header.css';
 
@@ -17,6 +18,7 @@ export default function App() {
 
             <section>
                 <Input />
+                <TaskList />
             </section>
 
             <footer>

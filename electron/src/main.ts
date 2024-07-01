@@ -1,8 +1,8 @@
 import {app,BrowserWindow} from 'electron';
 import path from 'path';
 import { Global } from './global';
-import './modules/ipc';
 import { Logger, LoggerFile } from './util/logger';
+import './modules/ipc';
 import fs from 'fs-extra';
 
 LoggerFile.startWrite();
@@ -52,7 +52,7 @@ app.whenReady().then(() => {
     init();
 
     createMainWindow();
-    
+
     Logger.info('start');
 
     app.on('window-all-closed', () => {

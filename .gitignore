@@ -1,4 +1,5 @@
 /dist
+/electron/public/
 
 # Logs
 logs

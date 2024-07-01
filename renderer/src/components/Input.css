@@ -1,0 +1,29 @@
+.url-input {
+    display: flex;   
+    flex-direction: row;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    
+    >* {
+        border: 1px solid rgb(155, 155, 155);
+        border-radius: 0;
+        height: 35px;
+    }
+
+    .submit-btn {
+        width: 100px;
+        padding: 5px;
+    }
+
+    .submit-btn:hover {
+        background: #e6e1e1
+    }
+
+    .type-select {
+        width: 90px;
+        padding: 5px;
+    }
+
+    >input {
+        width: 100%;
+    }
+}
